@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSubeTest\\TarjetaSubeTest.csproj": {}
+    "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSubeTest\\TarjetaSubeTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSubeTest\\TarjetaSubeTest.csproj": {
+    "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSubeTest\\TarjetaSubeTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSubeTest\\TarjetaSubeTest.csproj",
+        "projectUniqueName": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSubeTest\\TarjetaSubeTest.csproj",
         "projectName": "TarjetaSubeTest",
-        "projectPath": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSubeTest\\TarjetaSubeTest.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSubeTest\\obj\\",
+        "projectPath": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSubeTest\\TarjetaSubeTest.csproj",
+        "packagesPath": "C:\\Users\\Ignacio\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSubeTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ignacio\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,15 +22,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSube\\TarjetaSube.csproj": {
-                "projectPath": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSube\\TarjetaSube.csproj"
+              "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSube\\TarjetaSube.csproj": {
+                "projectPath": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSube\\TarjetaSube.csproj"
               }
             }
           }
@@ -39,7 +38,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net5.0": {
@@ -68,7 +73,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -77,21 +83,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSube\\TarjetaSube.csproj": {
+    "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSube\\TarjetaSube.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSube\\TarjetaSube.csproj",
+        "projectUniqueName": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSube\\TarjetaSube.csproj",
         "projectName": "TarjetaSube",
-        "projectPath": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSube\\TarjetaSube.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC\\source\\repos\\TarjetaSube\\TarjetaSube\\obj\\",
+        "projectPath": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSube\\TarjetaSube.csproj",
+        "packagesPath": "C:\\Users\\Ignacio\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ignacio\\Documents\\Escuela\\2025\\Mauri\\TrabajoTarjeta2025\\TarjetaSube\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Ignacio\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -99,7 +105,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -112,7 +117,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net5.0": {
@@ -123,7 +134,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -132,7 +144,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }
