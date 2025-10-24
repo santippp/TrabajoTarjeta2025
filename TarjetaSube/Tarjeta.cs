@@ -47,7 +47,7 @@ namespace TarjetaSube
        
         public bool DescontarSaldo(decimal monto)
         {
-            if (saldo >= monto)
+            if (saldo - monto >= -1200)
             {
                 saldo -= monto;
                 return true;
