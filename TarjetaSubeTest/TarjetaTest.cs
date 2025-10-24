@@ -113,6 +113,15 @@ namespace TarjetaSubeTest
             Assert.AreEqual(8000, tarjeta.Saldo);
         }
 
+        [Test]
+        public void CargarSaldoDespDeDeuda()
+        {
+            tarjeta.DescontarSaldo(1200);
+            tarjeta.Cargar(2000);
+
+            Assert.AreEqual(800, tarjeta.Saldo);
+        }
+
         #endregion
 
         #region Tests de Límite de Saldo
@@ -162,11 +171,9 @@ namespace TarjetaSubeTest
         [Test]
         public void DescontarSaldoInsuficienteTest()
         {
-            tarjeta.Cargar(1000); // Monto invalido, no se carga
-            bool resultado = tarjeta.DescontarSaldo(1580);
-            
-            Assert.IsFalse(resultado);
-            Assert.AreEqual(0, tarjeta.Saldo); // El saldo no cambio
+            bool resultado = tarjeta.DescontarSaldo(1000); // Saldo inicial = 0
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(-1000, tarjeta.Saldo);
         }
 
         [Test]
@@ -175,6 +182,15 @@ namespace TarjetaSubeTest
             tarjeta.Cargar(2000);
             tarjeta.DescontarSaldo(2000);
             Assert.AreEqual(0, tarjeta.Saldo);
+        }
+
+        [Test]
+        public void NoPuedeSuperarLimiteNegativoTest()
+        {
+            tarjeta.DescontarSaldo(1200);
+            bool resultado = tarjeta.DescontarSaldo(100);
+            Assert.IsFalse(resultado);
+            Assert.AreEqual(-1200, tarjeta.Saldo);
         }
 
         #endregion

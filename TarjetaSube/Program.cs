@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace TarjetaSube
 {
@@ -23,7 +23,7 @@ namespace TarjetaSube
 
             // Realiza viajes
             Console.WriteLine("\nRealizando viajes...");
-            
+
             Boleto boleto1 = colectivo120.PagarCon(miTarjeta);
             if (boleto1 != null)
             {
