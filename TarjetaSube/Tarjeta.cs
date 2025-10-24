@@ -5,7 +5,7 @@ namespace TarjetaSube
 {
     public class Tarjeta
     {
-        private decimal saldo;
+        protected decimal saldo;
         private const decimal LIMITE_SALDO = 40000;
         
         // Diferentes Montos validos
@@ -45,7 +45,7 @@ namespace TarjetaSube
         }
 
        
-        public bool DescontarSaldo(decimal monto)
+        public virtual bool DescontarSaldo(decimal monto)
         {
             if (saldo - monto >= -1200)
             {
@@ -53,6 +53,28 @@ namespace TarjetaSube
                 return true;
             }
             return false;
+        }
+    }
+
+    public class FranquiciaParcial : Tarjeta
+    {
+        //Esta linea llama al constructor de tarjeta de la clase principal con ese parametro de entrada
+        public FranquiciaParcial(decimal saldoInicial = 0) : base(saldoInicial) { }
+
+        public override bool DescontarSaldo(decimal monto)
+        {
+            return base.DescontarSaldo(monto / 2);
+        }
+    }
+
+    public class FranquiciaCompleta : Tarjeta
+    {
+        public FranquiciaCompleta(decimal saldoInicial = 0) : base(saldoInicial) { }
+
+        public override bool DescontarSaldo(decimal monto)
+        {
+            // Siempre devuelve verdadero porque siempre lo puede pagar
+            return true;
         }
     }
 }

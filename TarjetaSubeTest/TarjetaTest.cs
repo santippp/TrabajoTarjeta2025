@@ -7,11 +7,15 @@ namespace TarjetaSubeTest
     public class TarjetaTest
     {
         private Tarjeta tarjeta;
+        private FranquiciaParcial tarjetaParcial;
+        private FranquiciaCompleta tarjetaCompleta;
 
         [SetUp]
         public void Setup()
         {
             tarjeta = new Tarjeta();
+            tarjetaParcial = new FranquiciaParcial();
+            tarjetaCompleta = new FranquiciaCompleta();
         }
 
         #region Tests de Carga de Saldo
@@ -191,6 +195,28 @@ namespace TarjetaSubeTest
             bool resultado = tarjeta.DescontarSaldo(100);
             Assert.IsFalse(resultado);
             Assert.AreEqual(-1200, tarjeta.Saldo);
+        }
+
+        #endregion
+
+        #region Franquicias especiales
+        [Test]
+        public void MedioBoletoPagaMitadDelValorTest()
+        {
+            tarjetaParcial.Cargar(2000);
+            tarjetaParcial.DescontarSaldo(1580);
+            Assert.AreEqual(1210, tarjetaParcial.Saldo);
+        }
+
+        [Test]
+        public void FranquiciaCompletaSiemprePuedePagarTest()
+        {
+            bool resultado1 = tarjetaCompleta.DescontarSaldo(1580);
+            bool resultado2 = tarjetaCompleta.DescontarSaldo(1580);
+
+            Assert.IsTrue(resultado1);
+            Assert.IsTrue(resultado2);
+            Assert.AreEqual(0, tarjetaCompleta.Saldo);
         }
 
         #endregion
