@@ -101,12 +101,91 @@ namespace TarjetaSube
 
     public class FranquiciaParcial : Tarjeta
     {
-        //Esta linea llama al constructor de tarjeta de la clase principal con ese parametro de entrada
-        public FranquiciaParcial(decimal saldoInicial = 0) : base(saldoInicial) { }
+        private DateTime? ultimoViaje; // Registro ultimo viaje si existe
+        private int boletosHoy; // Boletos del dia
+        private DateTime? diaActual;
+        private Tiempo tiempo; // Depende del tiempo
+
+        public FranquiciaParcial(decimal saldoInicial = 0, Tiempo tiempo = null) : base(saldoInicial)
+        {
+            this.tiempo = tiempo ?? new Tiempo(); // Si no es null, se crea un tiempo para este
+            this.ultimoViaje = null;
+            this.boletosHoy = 0;
+            this.diaActual = null;
+        }
+
+        public DateTime? UltimoViaje
+        {
+            get { return ultimoViaje; }
+        }
+
+        public int BoletosHoy
+        {
+            get { return boletosHoy; }
+        }
+
+        private void VerificarCambioDeDia()
+        {
+            DateTime ahora = tiempo.Now();
+
+            // Si no habia dia registrado o si cambio el dia lo guarda
+            if (!diaActual.HasValue || ahora.Date > diaActual.Value.Date)
+            {
+                boletosHoy = 0;
+                diaActual = ahora.Date;
+            }
+        }
+
+        private bool PuedePagarConMedioBoleto()
+        {
+            VerificarCambioDeDia();
+            DateTime ahora = tiempo.Now();
+
+            // Maximo 2 boletos por dia
+            if (boletosHoy >= 2)
+            {
+                return false;
+            }
+
+            // 5m de diferencia entre viajes
+            if (ultimoViaje.HasValue)
+            {
+                TimeSpan diferencia = ahora - ultimoViaje.Value;
+                if (diferencia.TotalMinutes < 5)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void RegistrarMedioBoleto()
+        {
+            ultimoViaje = tiempo.Now();
+            boletosHoy++;
+        }
 
         public override bool DescontarSaldo(decimal monto)
         {
-            return base.DescontarSaldo(monto / 2);
+            bool puedeMedioBoleto = PuedePagarConMedioBoleto();
+
+            if (puedeMedioBoleto)
+            {
+                bool resultado = base.DescontarSaldo(monto / 2);
+
+                if (resultado)
+                {
+                    RegistrarMedioBoleto();
+                }
+
+                return resultado;
+            }
+            else
+            {
+                // Si no pudo paga monto completo
+                return base.DescontarSaldo(monto);
+            }
         }
     }
 
