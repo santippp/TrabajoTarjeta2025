@@ -135,20 +135,23 @@ namespace TarjetaSubeTest
         {
             // Cargar hasta casi el límite
             tarjeta.Cargar(30000);
-            tarjeta.Cargar(8000);
+            tarjeta.Cargar(25000);
+            tarjeta.Cargar(10000);
+
+            // Intentar cargar más (debería llegar al límite de 56000)
+            tarjeta.Cargar(2000);
             
-            // Intentar cargar más (debería llegar al límite de 40000)
-            tarjeta.Cargar(5000);
-            
-            Assert.AreEqual(40000, tarjeta.Saldo);
+            Assert.AreEqual(56000, tarjeta.Saldo);
         }
 
         [Test]
         public void LimiteExactoTest()
         {
-            tarjeta.Cargar(20000);
-            tarjeta.Cargar(20000);
-            Assert.AreEqual(40000, tarjeta.Saldo);
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(25000);
+            tarjeta.Cargar(10000);
+            tarjeta.Cargar(1000);
+            Assert.AreEqual(56000, tarjeta.Saldo);
         }
 
         [Test]
@@ -219,6 +222,38 @@ namespace TarjetaSubeTest
             Assert.AreEqual(0, tarjetaCompleta.Saldo);
         }
 
+        #endregion
+
+        #region Test saldo pendiente
+        [Test]
+        public void CargaSuperaLimiteYQuedaPendienteTest()
+        {
+            Tarjeta tarjeta1 = new Tarjeta(50000);
+
+            // Intentar cargar 10,000 (supera el limite de 56,000)
+            bool resultado = tarjeta1.Cargar(10000);
+
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(56000, tarjeta1.Saldo);
+            Assert.AreEqual(4000, tarjeta1.SaldoPendiente);
+        }
+
+        [Test]
+        public void SaldoPendienteSeAcreditaDespuesDeViajeTest()
+        {
+            Tarjeta tarjeta = new Tarjeta(50000);
+            tarjeta.Cargar(10000);
+
+            Colectivo colectivo = new Colectivo();
+            colectivo.PagarCon(tarjeta);
+
+            // 56000 - 1580 = 54420
+            // 54420 + 1580 = 56000
+            // 4000 - 1580 = 2420
+
+            Assert.AreEqual(56000, tarjeta.Saldo);
+            Assert.AreEqual(2420, tarjeta.SaldoPendiente);
+        }
         #endregion
     }
 }

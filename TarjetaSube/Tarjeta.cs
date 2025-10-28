@@ -6,7 +6,8 @@ namespace TarjetaSube
     public class Tarjeta
     {
         protected decimal saldo;
-        private const decimal LIMITE_SALDO = 40000;
+        protected decimal saldoPendienteAcreditacion;
+        private const decimal LIMITE_SALDO = 56000;
         
         // Diferentes Montos validos
         private static readonly HashSet<int> MontosValidos = new HashSet<int>
@@ -23,7 +24,12 @@ namespace TarjetaSube
         {
             get { return saldo; }
         }
-       
+
+        public decimal SaldoPendiente
+        {
+            get { return saldoPendienteAcreditacion; }
+        }
+
         public bool Cargar(int monto)
         {
             // Valida que el monto sea valido
@@ -32,24 +38,61 @@ namespace TarjetaSube
                 return false;
             }
 
+            decimal espacioDisponible = LIMITE_SALDO - saldo;
+
             // Valida que no supere el limite
-            if (saldo + monto > LIMITE_SALDO)
+            if (monto <= espacioDisponible)
             {
                 // Cargar solo hasta el límite
+                saldo += monto;
+            }
+            else
+            {
                 saldo = LIMITE_SALDO;
-                return true;
+                // El resto del saldo queda pendiente
+                saldoPendienteAcreditacion += monto - espacioDisponible;
             }
 
-            saldo += monto;
-            return true;
+             return true;
         }
 
-       
+        public void AcreditarSaldoPendiente()
+        {
+            if (saldoPendienteAcreditacion <= 0)
+            {
+                return; // No hay nada pendiente
+            }
+
+            decimal espacioDisponible = LIMITE_SALDO - saldo;
+
+            if (espacioDisponible <= 0)
+            {
+                return; // No se puede acreditar (maximo)
+            }
+
+            if (saldoPendienteAcreditacion <= espacioDisponible)
+            {
+                // Puedo acreditar todo el pendiente
+                saldo += saldoPendienteAcreditacion;
+                saldoPendienteAcreditacion = 0;
+            }
+            else
+            {
+                // Solo acredito hasta el límite
+                saldo += espacioDisponible;
+                saldoPendienteAcreditacion -= espacioDisponible;
+            }
+
+        }
+
+
+
         public virtual bool DescontarSaldo(decimal monto)
         {
             if (saldo - monto >= -1200)
             {
                 saldo -= monto;
+                AcreditarSaldoPendiente();
                 return true;
             }
             return false;
