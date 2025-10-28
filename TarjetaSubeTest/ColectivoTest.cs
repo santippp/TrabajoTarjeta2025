@@ -76,8 +76,8 @@ namespace TarjetaSubeTest
             
             Boleto boleto = colectivo.PagarCon(tarjeta);
             
-            Assert.IsNull(boleto);
-            Assert.AreEqual(1000, tarjeta.Saldo);
+            Assert.IsNotNull(boleto); // Queda en negativo
+            Assert.AreEqual(-580, tarjeta.Saldo); // 2000 - 1000 - 1580 = -580
         }
 
         [Test]

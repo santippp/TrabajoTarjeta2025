@@ -13,7 +13,6 @@ namespace TarjetaSube
         }
 
         public Boleto PagarCon(Tarjeta tarjeta)
-        //Devuelve el boleto si se pudo, de lo contrario null
         {
             if (tarjeta == null)
             {
@@ -31,13 +30,17 @@ namespace TarjetaSube
 
             // Crear y devolver el boleto
             Boleto boleto = new Boleto(
-                monto: TARIFA_BASICA,
+                tarifa: TARIFA_BASICA,
                 lineaColectivo: Linea,
-                saldoRestante: tarjeta.Saldo
+                tarjeta: tarjeta
             );
 
             return boleto;
         }
 
+        public decimal ObtenerTarifa()
+        {
+            return TARIFA_BASICA;
+        }
     }
 }
