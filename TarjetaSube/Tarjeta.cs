@@ -191,12 +191,59 @@ namespace TarjetaSube
 
     public class FranquiciaCompleta : Tarjeta
     {
-        public FranquiciaCompleta(decimal saldoInicial = 0) : base(saldoInicial) { }
+        private int boletosHoy;
+        private DateTime? diaActual;
+        private Tiempo tiempo;
+
+        public FranquiciaCompleta(decimal saldoInicial = 0, Tiempo tiempo = null) : base(saldoInicial)
+        {
+            this.tiempo = tiempo ?? new Tiempo();
+            this.boletosHoy = 0;
+            this.diaActual = null;
+        }
+
+        public int ViajesGratuitosHoy
+        {
+            get { return boletosHoy; }
+        }
+
+        private void VerificarCambioDeDia()
+        {
+            DateTime ahora = tiempo.Now();
+
+            if (!diaActual.HasValue || ahora.Date > diaActual.Value.Date)
+            {
+                boletosHoy = 0;
+                diaActual = ahora.Date;
+            }
+        }
+
+        private bool PuedeViajarGratis()
+        {
+            VerificarCambioDeDia();
+
+            return boletosHoy < 2;
+        }
+
+
+        private void RegistrarViajeGratuito()
+        {
+            boletosHoy++;
+        }
 
         public override bool DescontarSaldo(decimal monto)
         {
-            // Siempre devuelve verdadero porque siempre lo puede pagar
-            return true;
+            bool puedeGratis = PuedeViajarGratis();
+
+            if (puedeGratis)
+            {
+                RegistrarViajeGratuito();
+                return true;
+            }
+            else
+            {
+                return base.DescontarSaldo(monto);
+            }
         }
     }
 }
