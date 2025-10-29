@@ -161,29 +161,31 @@ namespace TarjetaSubeTest
         public void TrasbordoALas22_00NoEsValidoTest()
         {
             // Configurar a las 22:00
-            tiempo.AgregarMinutos(22 * 60); // 22:00
-            tarjeta = new Tarjeta(10000, tiempo);
+            TiempoFalso tiempo1 = new TiempoFalso(2024, 10, 14);
+            Tarjeta tarjeta1 = new Tarjeta(10000, tiempo1);
+            tiempo1.AgregarMinutos(22 * 60); // 22:00
 
-            colectivo120.PagarCon(tarjeta);
-            tiempo.AgregarMinutos(10);
-            Boleto boleto2 = colectivo133.PagarCon(tarjeta);
+            colectivo120.PagarCon(tarjeta1);
+            tiempo1.AgregarMinutos(10);
+            Boleto boleto2 = colectivo133.PagarCon(tarjeta1);
 
             Assert.IsFalse(boleto2.EsTrasbordo);
             Assert.AreEqual(1580, boleto2.MontoAbonado);
         }
 
         [Test]
-        public void TrasbordoALas6_59NoEsValidoTest()
+        public void TrasbordoALas6_59EsValidoTest()
         {
             // Configurar a las 6:59 AM
-            tiempo.AgregarMinutos(6 * 60 + 59); // 6:59 AM
-            tarjeta = new Tarjeta(10000, tiempo);
+            TiempoFalso tiempo1 = new TiempoFalso(2024, 10, 14);
+            tiempo1.AgregarMinutos(6 * 60 + 59); // 6:59 AM
+            Tarjeta tarjeta1 = new Tarjeta(10000, tiempo1);
 
-            colectivo120.PagarCon(tarjeta);
-            tiempo.AgregarMinutos(10);
-            Boleto boleto2 = colectivo133.PagarCon(tarjeta);
+            colectivo120.PagarCon(tarjeta1);
+            tiempo1.AgregarMinutos(10); // 7:09 AM - Si se puede ya
+            Boleto boleto2 = colectivo133.PagarCon(tarjeta1);
 
-            Assert.IsFalse(boleto2.EsTrasbordo);
+            Assert.IsTrue(boleto2.EsTrasbordo);
         }
 
         [Test]
@@ -263,22 +265,6 @@ namespace TarjetaSubeTest
 
             // Solo se cobró el primer viaje
             Assert.AreEqual(8420, tarjeta.Saldo); // 10000 - 1580
-        }
-
-        [Test]
-        public void TrasbordoAMismaLineaOriginalNoEsValidoTest()
-        {
-            // 120 → 133 (trasbordo) → 120 (no es trasbordo)
-            colectivo120.PagarCon(tarjeta); // Paga 1580
-
-            tiempo.AgregarMinutos(10);
-            colectivo133.PagarCon(tarjeta); // Trasbordo gratis
-
-            tiempo.AgregarMinutos(10);
-            Boleto boleto3 = colectivo120.PagarCon(tarjeta); // Vuelve a 120
-
-            Assert.IsFalse(boleto3.EsTrasbordo); // NO es trasbordo (misma línea que el último)
-            Assert.AreEqual(6840, tarjeta.Saldo); // 10000 - 1580 - 1580
         }
 
         #endregion

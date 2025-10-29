@@ -19,11 +19,11 @@ namespace TarjetaSube
             contador++;
             Id = contador;
             
-            Fecha = DateTime.Now;
+            Fecha = tarjeta.GetTiempo().Now();
             TipoTarjeta = tarjeta.GetType().Name;
             LineaColectivo = lineaColectivo;
             SaldoRestante = tarjeta.Saldo;
-            MontoAbonado = tarifa;
+            MontoAbonado = esTrasbordo ? 0 : tarifa;
             EsTrasbordo = esTrasbordo;
 
         }

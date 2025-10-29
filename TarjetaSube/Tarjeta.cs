@@ -8,7 +8,7 @@ namespace TarjetaSube
         protected decimal saldo;
         protected decimal saldoPendienteAcreditacion;
         private const decimal LIMITE_SALDO = 56000;
-        protected Boleto ultimoBoleto; 
+        protected Boleto ultimoBoleto; // Se guarda hast un (1) boleto anterior para calcular el trasbordo
         protected Tiempo tiempo;
 
         // Diferentes Montos validos
@@ -36,6 +36,10 @@ namespace TarjetaSube
         public Boleto UltimoBoleto
         {
             get { return ultimoBoleto; }
+        }
+        public Tiempo GetTiempo()
+        {
+            return tiempo;
         }
         public void RegistrarBoleto(Boleto boleto)
         {
