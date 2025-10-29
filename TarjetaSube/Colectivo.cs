@@ -19,8 +19,11 @@ namespace TarjetaSube
                 return null;
             }
 
+            bool esTrasbordo = tarjeta.PuedeHacerTrasbordo(Linea);
+            decimal montoACobrar = esTrasbordo ? 0 : TARIFA_BASICA;
+
             // Intenta descontar saldo
-            bool pagoExitoso = tarjeta.DescontarSaldo(TARIFA_BASICA);
+            bool pagoExitoso = tarjeta.DescontarSaldo(montoACobrar);
 
             if (!pagoExitoso)
             {
@@ -32,8 +35,11 @@ namespace TarjetaSube
             Boleto boleto = new Boleto(
                 tarifa: TARIFA_BASICA,
                 lineaColectivo: Linea,
-                tarjeta: tarjeta
+                tarjeta: tarjeta,
+                esTrasbordo: esTrasbordo
             );
+
+            tarjeta.RegistrarBoleto(boleto);
 
             return boleto;
         }

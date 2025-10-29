@@ -12,24 +12,28 @@ namespace TarjetaSube
         public string LineaColectivo { get; private set; }
         public decimal MontoAbonado { get; private set; }
         public decimal SaldoRestante { get; private set; }
+        public bool EsTrasbordo { get; private set; }
 
-        public Boleto(decimal tarifa, string lineaColectivo, Tarjeta tarjeta)
+        public Boleto(decimal tarifa, string lineaColectivo, Tarjeta tarjeta, bool esTrasbordo = false)
         {
             contador++;
             Id = contador;
             
-            Fecha = DateTime.Now;
+            Fecha = tarjeta.GetTiempo().Now();
             TipoTarjeta = tarjeta.GetType().Name;
             LineaColectivo = lineaColectivo;
             SaldoRestante = tarjeta.Saldo;
-            MontoAbonado = tarifa;
+            MontoAbonado = esTrasbordo ? 0 : tarifa;
+            EsTrasbordo = esTrasbordo;
 
         }
 
         public override string ToString()
         {
+            string trasbordo = EsTrasbordo ? " [TRASBORDO]" : "";
+
             return $"--------------------------------------\n" +
-                   $"  BOLETO: {Id}\n" +
+                   $"  BOLETO: {Id}{trasbordo}\n" +
                    $"  Fecha:       {Fecha:dd/MM/yyyy HH:mm:ss}\n" +
                    $"  Línea:       {LineaColectivo}\n" +
                    $"  Tipo:        {TipoTarjeta}\n" +
