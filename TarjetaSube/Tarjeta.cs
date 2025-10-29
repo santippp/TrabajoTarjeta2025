@@ -8,16 +8,20 @@ namespace TarjetaSube
         protected decimal saldo;
         protected decimal saldoPendienteAcreditacion;
         private const decimal LIMITE_SALDO = 56000;
-        
+        protected Boleto ultimoBoleto; 
+        protected Tiempo tiempo;
+
         // Diferentes Montos validos
         private static readonly HashSet<int> MontosValidos = new HashSet<int>
         {
             2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000
         };
 
-        public Tarjeta(decimal saldoInicial = 0)
+        public Tarjeta(decimal saldoInicial = 0, Tiempo tiempo = null)
         {
             this.saldo = saldoInicial;
+            this.tiempo = tiempo ?? new Tiempo();
+            this.ultimoBoleto = null;
         }
 
         public decimal Saldo
@@ -28,6 +32,55 @@ namespace TarjetaSube
         public decimal SaldoPendiente
         {
             get { return saldoPendienteAcreditacion; }
+        }
+        public Boleto UltimoBoleto
+        {
+            get { return ultimoBoleto; }
+        }
+        public void RegistrarBoleto(Boleto boleto)
+        {
+            ultimoBoleto = boleto;
+        }
+
+        public bool PuedeHacerTrasbordo(string lineaActual)
+        {
+            if (ultimoBoleto == null)
+            {
+                return false;
+            }
+
+            DateTime ahora = tiempo.Now();
+
+            // Distinta linea
+            if (ultimoBoleto.LineaColectivo == lineaActual)
+            {
+                return false;
+            }
+
+            // Dentro de 1 hora
+            TimeSpan diferencia = ahora - ultimoBoleto.Fecha;
+            if (diferencia.TotalHours >= 1)
+            {
+                return false;
+            }
+
+            // Dia de la semana
+            DayOfWeek dia = ahora.DayOfWeek;
+            int hora = ahora.Hour;
+
+            // Domingo no se puede
+            if (dia == DayOfWeek.Sunday)
+            {
+                return false;
+            }
+
+            // Dentro del horario
+            if (hora < 7 || hora >= 22)
+            {
+                return false;
+            }
+
+            return true; // Cumple todas las condiciones
         }
 
         public bool Cargar(int monto)
@@ -104,11 +157,9 @@ namespace TarjetaSube
         private DateTime? ultimoViaje; // Registro ultimo viaje si existe
         private int boletosHoy; // Boletos del dia
         private DateTime? diaActual;
-        private Tiempo tiempo; // Depende del tiempo
 
-        public FranquiciaParcial(decimal saldoInicial = 0, Tiempo tiempo = null) : base(saldoInicial)
+        public FranquiciaParcial(decimal saldoInicial = 0, Tiempo tiempo = null) : base(saldoInicial, tiempo)
         {
-            this.tiempo = tiempo ?? new Tiempo(); // Si no es null, se crea un tiempo para este
             this.ultimoViaje = null;
             this.boletosHoy = 0;
             this.diaActual = null;
@@ -193,11 +244,9 @@ namespace TarjetaSube
     {
         private int boletosHoy;
         private DateTime? diaActual;
-        private Tiempo tiempo;
 
-        public FranquiciaCompleta(decimal saldoInicial = 0, Tiempo tiempo = null) : base(saldoInicial)
+        public FranquiciaCompleta(decimal saldoInicial = 0, Tiempo tiempo = null) : base(saldoInicial, tiempo)
         {
-            this.tiempo = tiempo ?? new Tiempo();
             this.boletosHoy = 0;
             this.diaActual = null;
         }
