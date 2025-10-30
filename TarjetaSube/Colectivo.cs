@@ -5,7 +5,8 @@ namespace TarjetaSube
     public class Colectivo
     {
         public string Linea { get; private set; }
-        private const decimal TARIFA_BASICA = 1580;
+        protected virtual decimal TarifaBasica => 1580;
+
 
         public Colectivo(string linea = "120")
         {
@@ -20,9 +21,10 @@ namespace TarjetaSube
             }
 
             bool esTrasbordo = tarjeta.PuedeHacerTrasbordo(Linea);
-            decimal montoACobrar = esTrasbordo ? 0 : TARIFA_BASICA;
+            decimal montoACobrar = esTrasbordo ? 0 : TarifaBasica;
 
             // Intenta descontar saldo
+            decimal saldoAntes = tarjeta.Saldo;
             bool pagoExitoso = tarjeta.DescontarSaldo(montoACobrar);
 
             if (!pagoExitoso)
@@ -31,9 +33,12 @@ namespace TarjetaSube
                 return null;
             }
 
+            decimal saldoDespues = tarjeta.Saldo;
+            decimal montoRealCobrado = saldoAntes - saldoDespues;
+
             // Crear y devolver el boleto
             Boleto boleto = new Boleto(
-                tarifa: TARIFA_BASICA,
+                tarifa: montoRealCobrado,
                 lineaColectivo: Linea,
                 tarjeta: tarjeta,
                 esTrasbordo: esTrasbordo
@@ -46,7 +51,15 @@ namespace TarjetaSube
 
         public decimal ObtenerTarifa()
         {
-            return TARIFA_BASICA;
+            return TarifaBasica;
         }
+    }
+
+    public class Interurbano : Colectivo
+    {
+        protected override decimal TarifaBasica => 3000;
+        public Interurbano(string linea) : base(linea) { }
+
+
     }
 }
