@@ -16,6 +16,7 @@ namespace TarjetaSubeTest
         {
             //Nos va a permitir modificar el tiempo
             tiempo = new TiempoFalso(2024, 10, 14);
+            tiempo.AgregarMinutos(6 * 60);
 
             tarjeta = new FranquiciaParcial(10000, tiempo);
 
@@ -282,7 +283,7 @@ namespace TarjetaSubeTest
             colectivo.PagarCon(tarjeta);
 
             Assert.IsNotNull(tarjeta.UltimoViaje);
-            Assert.AreEqual(new DateTime(2024, 10, 14, 0, 0, 0), tarjeta.UltimoViaje.Value);
+            Assert.AreEqual(new DateTime(2024, 10, 14, 6, 0, 0), tarjeta.UltimoViaje.Value);
         }
 
         [Test]
@@ -315,22 +316,6 @@ namespace TarjetaSubeTest
         #region Tests Edge Cases
 
         [Test]
-        public void ViajeAMedianocheCambiaDiaTest()
-        {
-            tiempo.AgregarMinutos(23 * 60 + 58); // 23:58
-
-            colectivo.PagarCon(tarjeta);
-            Assert.AreEqual(1, tarjeta.BoletosHoy);
-
-            tiempo.AgregarMinutos(5);
-
-            colectivo.PagarCon(tarjeta);
-
-            Assert.AreEqual(1, tarjeta.BoletosHoy); // Contador reseteado
-            Assert.AreEqual(8420, tarjeta.Saldo); // Ambos con medio boleto
-        }
-
-        [Test]
         public void VariosDiasSeguidos_VerificaContadorTest()
         {
             for (int dia = 0; dia < 3; dia++)
@@ -344,6 +329,139 @@ namespace TarjetaSubeTest
                 tiempo.AgregarDias(1);
             }
             Assert.AreEqual(5260, tarjeta.Saldo); // 10000 - 4740
+        }
+
+        #endregion
+
+        #region Tests de Restricción Horaria
+
+        [Test]
+        public void MedioBoletoALas6AMEsValidoTest()
+        {
+            // Lunes a las 6:00 AM
+            tiempo.AgregarMinutos(6 * 60); // 6:00 AM
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            // Debe aplicar medio boleto
+            Assert.AreEqual(9210, tarjeta.Saldo); // 10000 - 790
+        }
+
+        [Test]
+        public void MedioBoletoALas21_59EsValidoTest()
+        {
+            // Lunes a las 21:59
+            tiempo.AgregarMinutos(15 * 60 + 59); // 21:59
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(9210, tarjeta.Saldo); // Medio boleto
+        }
+
+        [Test]
+        public void MedioBoletoALas5_59NoEsValidoTest()
+        {
+            TiempoFalso tiempo1 = new TiempoFalso(2024, 10, 14);
+            tiempo1.AgregarMinutos(5 * 60 + 59); // 5:59 AM
+            tarjeta = new FranquiciaParcial(10000, tiempo1);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            // Debe cobrar tarifa COMPLETA (no medio boleto)
+            Assert.AreEqual(8420, tarjeta.Saldo); // 10000 - 1580
+        }
+
+        [Test]
+        public void MedioBoletoALas22_00NoEsValidoTest()
+        {
+            // Lunes a las 22:00 (fuera de horario)
+            tiempo.AgregarMinutos(22 * 60); // 22:00
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            // Debe cobrar tarifa completa
+            Assert.AreEqual(8420, tarjeta.Saldo); // 10000 - 1580
+        }
+
+        [Test]
+        public void MedioBoletoALas23_00NoEsValidoTest()
+        {
+            // Lunes a las 23:00 (fuera de horario)
+            tiempo.AgregarMinutos(23 * 60); // 23:00
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(8420, tarjeta.Saldo); // Tarifa completa
+        }
+
+        [Test]
+        public void MedioBoletoEnSabadoNoEsValidoTest()
+        {
+            // Sábado a las 10:00 AM
+            tiempo.AgregarDias(5); // Sábado (14/10 + 5 = 19/10 sábado)
+            tiempo.AgregarMinutos(10 * 60); // 10:00 AM
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            // Debe cobrar tarifa completa (no medio boleto en sábado)
+            Assert.AreEqual(8420, tarjeta.Saldo); // 10000 - 1580
+        }
+
+        [Test]
+        public void MedioBoletoEnDomingoNoEsValidoTest()
+        {
+            // Domingo a las 10:00 AM
+            tiempo.AgregarDias(6); // Domingo (14/10 + 6 = 20/10 domingo)
+            tiempo.AgregarMinutos(4 * 60); // 10:00 AM
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            // Debe cobrar tarifa completa
+            Assert.AreEqual(8420, tarjeta.Saldo); // 10000 - 1580
+        }
+
+        [Test]
+        public void MedioBoletoEnViernesEsValidoTest()
+        {
+            // Viernes a las 10:00 AM
+            tiempo.AgregarDias(4); // Viernes (14/10 + 4 = 18/10 viernes)
+            tiempo.AgregarMinutos(10 * 60); // 10:00 AM
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(9210, tarjeta.Saldo); // Medio boleto válido
+        }
+
+        [Test]
+        public void TransicionHoraria_21_59_a_22_01Test()
+        {
+            // Primer viaje a las 21:59 (válido)
+            tiempo.AgregarMinutos(15 * 60 + 59); // 21:59
+            tarjeta = new FranquiciaParcial(10000, tiempo);
+
+            Boleto boleto1 = colectivo.PagarCon(tarjeta);
+            Assert.AreEqual(9210, tarjeta.Saldo); // Medio boleto
+
+            // Avanzar a las 22:01 (inválido)
+            tiempo.AgregarMinutos(5); // Ahora 22:04
+
+            Boleto boleto2 = colectivo.PagarCon(tarjeta);
+            Assert.AreEqual(7630, tarjeta.Saldo); // Tarifa completa (9210 - 1580)
         }
 
         #endregion

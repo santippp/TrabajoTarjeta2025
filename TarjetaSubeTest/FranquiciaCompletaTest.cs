@@ -15,6 +15,7 @@ namespace TarjetaSubeTest
         public void Setup()
         {
             tiempo = new TiempoFalso(2024, 10, 14);
+            tiempo.AgregarMinutos(60 * 6);
 
             tarjeta = new FranquiciaCompleta(5000, tiempo);
 
@@ -253,23 +254,6 @@ namespace TarjetaSubeTest
         #endregion
 
         #region Tests Edge Cases
-
-        [Test]
-        public void ViajeAMedianocheCambiaDiaTest()
-        {
-            tiempo.AgregarMinutos(23 * 60 + 59); // 23:59
-
-            colectivo.PagarCon(tarjeta);
-            colectivo.PagarCon(tarjeta);
-            Assert.AreEqual(2, tarjeta.ViajesGratuitosHoy);
-
-            tiempo.AgregarMinutos(2);
-
-            colectivo.PagarCon(tarjeta);
-
-            Assert.AreEqual(1, tarjeta.ViajesGratuitosHoy);
-            Assert.AreEqual(5000, tarjeta.Saldo);
-        }
 
         [Test]
         public void DiezViajesEnCincoDiasTest()

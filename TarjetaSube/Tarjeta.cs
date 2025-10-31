@@ -212,6 +212,21 @@ namespace TarjetaSube
                 }
             }
 
+            DayOfWeek dia = ahora.DayOfWeek;
+            int hora = ahora.Hour;
+
+            // Franja horaria
+            if (hora < 6 || hora >= 22)
+            {
+                return false;
+            }
+
+            //No puede ser domingo ni sabado
+            if (dia == DayOfWeek.Sunday || dia == DayOfWeek.Saturday) 
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -275,7 +290,26 @@ namespace TarjetaSube
         {
             VerificarCambioDeDia();
 
-            return boletosHoy < 2;
+            DateTime ahora = tiempo.Now();
+            DayOfWeek dia = ahora.DayOfWeek;
+            int hora = ahora.Hour;
+
+            if (boletosHoy >= 2)
+            {
+                return false;
+            }
+
+            if (hora < 6 || hora >= 22)
+            {
+                return false;
+            }
+
+            if (dia == DayOfWeek.Sunday || dia == DayOfWeek.Saturday)
+            {
+                return false;
+            }
+
+            return true;
         }
 
 

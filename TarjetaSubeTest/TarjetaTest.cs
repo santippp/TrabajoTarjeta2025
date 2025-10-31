@@ -255,5 +255,6 @@ namespace TarjetaSubeTest
             Assert.AreEqual(2420, tarjeta.SaldoPendiente);
         }
         #endregion
+
     }
 }
