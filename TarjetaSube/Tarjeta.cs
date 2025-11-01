@@ -11,6 +11,9 @@ namespace TarjetaSube
         protected Boleto ultimoBoleto; // Se guarda hast un (1) boleto anterior para calcular el trasbordo
         protected Tiempo tiempo;
 
+        private DateTime? mesActual;
+        private int boletosMes;
+
         // Diferentes Montos validos
         private static readonly HashSet<int> MontosValidos = new HashSet<int>
         {
@@ -22,6 +25,8 @@ namespace TarjetaSube
             this.saldo = saldoInicial;
             this.tiempo = tiempo ?? new Tiempo();
             this.ultimoBoleto = null;
+            this.boletosMes = 0;
+            this.mesActual = null;
         }
 
         public decimal Saldo
@@ -41,11 +46,56 @@ namespace TarjetaSube
         {
             return tiempo;
         }
+        public int BoletosMes
+        {
+            get { return boletosMes; }
+        }
+
         public void RegistrarBoleto(Boleto boleto)
         {
             ultimoBoleto = boleto;
+            boletosMes++;
         }
 
+        private void VerificarCambioDeMes()
+        {
+            DateTime ahora = tiempo.Now();
+
+            // Si no hay mes registrado o cambio el mes/año
+            if (!mesActual.HasValue ||
+                ahora.Year != mesActual.Value.Year ||
+                ahora.Month != mesActual.Value.Month)
+            {
+                boletosMes = 0;
+                mesActual = ahora;
+            }
+        }
+
+        protected virtual decimal ObtenerDescuentoUsoFrecuente()
+        {
+            VerificarCambioDeMes();
+
+            // 1 - 29
+            if (boletosMes < 30)
+            {
+                return 1.0m;
+            }
+            // 30-59
+            else if (boletosMes < 60)
+            {
+                return 0.80m;
+            }
+            // 60-79
+            else if (boletosMes < 80)
+            {
+                return 0.75m;
+            }
+            // +80
+            else
+            {
+                return 1.0m;
+            }
+        }
         public bool PuedeHacerTrasbordo(string lineaActual)
         {
             if (ultimoBoleto == null)
@@ -146,9 +196,13 @@ namespace TarjetaSube
 
         public virtual bool DescontarSaldo(decimal monto)
         {
-            if (saldo - monto >= -1200)
+            decimal descuento = ObtenerDescuentoUsoFrecuente();
+            decimal montoACobrar = monto * descuento;
+
+
+            if (saldo - montoACobrar >= -1200)
             {
-                saldo -= monto;
+                saldo -= montoACobrar;
                 AcreditarSaldoPendiente();
                 return true;
             }
@@ -177,6 +231,11 @@ namespace TarjetaSube
         public int BoletosHoy
         {
             get { return boletosHoy; }
+        }
+
+        protected override decimal ObtenerDescuentoUsoFrecuente()
+        {
+            return 1.0m; // Siempre 100%
         }
 
         private void VerificarCambioDeDia()
@@ -273,6 +332,11 @@ namespace TarjetaSube
         public int ViajesGratuitosHoy
         {
             get { return boletosHoy; }
+        }
+
+        protected override decimal ObtenerDescuentoUsoFrecuente()
+        {
+            return 1.0m; // Siempre 100%
         }
 
         private void VerificarCambioDeDia()
