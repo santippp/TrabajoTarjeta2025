@@ -75,13 +75,15 @@ namespace TarjetaSube
         {
             VerificarCambioDeMes();
 
+            // El uso frecuente se hace cuando se alcanzo a dicha cifra
+            // Cuando tenga 29 boletosMes significa que estoy procesando el numero 30
             // 1 - 29
-            if (boletosMes < 30)
+            if (boletosMes < 29)
             {
                 return 1.0m;
             }
             // 30-59
-            else if (boletosMes < 60)
+            else if (boletosMes < 59)
             {
                 return 0.80m;
             }
