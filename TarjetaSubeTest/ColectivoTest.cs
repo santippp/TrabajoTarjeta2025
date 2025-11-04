@@ -150,7 +150,9 @@ namespace TarjetaSubeTest
         [Test]
         public void Interurbano_AceptaFranquicias_IgualQueUrbano()
         {
-            tarjeta = new FranquiciaCompleta();
+            TiempoFalso tiempo = new TiempoFalso(2024, 10, 14);
+            tiempo.AgregarMinutos (7 * 60);
+            tarjeta = new FranquiciaCompleta(0, tiempo);
             interurbano = new Interurbano("Baigorria");
 
             Boleto boleto = interurbano.PagarCon(tarjeta);

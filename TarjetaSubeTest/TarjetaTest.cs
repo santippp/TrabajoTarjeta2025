@@ -206,6 +206,10 @@ namespace TarjetaSubeTest
         [Test]
         public void MedioBoletoPagaMitadDelValorTest()
         {
+            TiempoFalso tiempo = new TiempoFalso(2024, 1, 1);
+            tiempo.AgregarMinutos(7 * 60);
+            tarjetaParcial = new FranquiciaParcial(0, tiempo);
+
             tarjetaParcial.Cargar(2000);
             tarjetaParcial.DescontarSaldo(1580);
             Assert.AreEqual(1210, tarjetaParcial.Saldo);
@@ -214,6 +218,10 @@ namespace TarjetaSubeTest
         [Test]
         public void FranquiciaCompletaSiemprePuedePagarTest()
         {
+            TiempoFalso tiempo = new TiempoFalso(2024, 1, 1);
+            tiempo.AgregarMinutos(7 * 60);
+            tarjetaCompleta = new FranquiciaCompleta(0, tiempo);
+
             bool resultado1 = tarjetaCompleta.DescontarSaldo(1580);
             bool resultado2 = tarjetaCompleta.DescontarSaldo(1580);
 

@@ -29,5 +29,10 @@ namespace TarjetaSube
         {
             tiempo = tiempo.AddMinutes(cantidad);
         }
+
+        public void SetInicioDia()
+        {
+            tiempo = tiempo.Date;
+        }
     }
 }
